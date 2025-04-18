@@ -11,45 +11,20 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Your Guide to Opennote",
         "groups": [
-          {
-            "group": "Get Started",
-            "pages": [
-              "introduction",
-              "quickstart",
-              "development"
-            ]
-          },
           {
             "group": "Essentials",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
+              "introduction",
+              "feynman-2",
+              "cookbook"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Information",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "info/patch-notes"
             ]
           }
         ]
@@ -58,18 +33,13 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Join our Discord",
+          "href": "https://opennote.com/discord",
+          "icon": "discord"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
+          "anchor": "Read our Blog",
+          "href": "https://opennote.com/labs",
           "icon": "newspaper"
         }
       ]
@@ -94,9 +64,13 @@
   },
   "footer": {
     "socials": {
+      "earth-americas": "https://opennote.com",
       "x": "https://x.com/opennote_me",
-      "github": "https://github.com/opennote-dev",
-      "linkedin": "https://linkedin.com/company/opennote"
+      "instagram": "https://www.instagram.com/opennote_me",
+      "discord": "https://opennote.com/discord",
+      "youtube": "https://www.youtube.com/@opennoteedu",
+      "linkedin": "https://www.linkedin.com/company/opennote",
+      "github": "https://github.com/opennote-dev"
     }
   }
 }
