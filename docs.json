@@ -35,8 +35,8 @@
           {
             "group": "API Information",
             "pages": [
-              "apidoc/introduction",
-              "apidoc/pricing"
+              "video-api/introduction",
+              "video-api/pricing"
             ]
           },
           {
