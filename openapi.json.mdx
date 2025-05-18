@@ -1,0 +1,353 @@
+// 20250518140700
+// http://127.0.0.1:8081/openapi.json
+
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Opennote Video API",
+    "version": "1.1.2"
+  },
+  "paths": {
+    "/docs": {
+      "get": {
+        "summary": "Docs",
+        "operationId": "docs_docs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": [
+              
+            ]
+          }
+        ]
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "Openapi",
+        "operationId": "openapi_openapi_json_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": [
+              
+            ]
+          }
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Home",
+        "operationId": "home__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/video/make": {
+      "post": {
+        "summary": "Make Video",
+        "operationId": "make_video_video_make_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoCreateRequestAPI"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoCreateRequestAPIReply"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/video/status/{video_id}": {
+      "get": {
+        "summary": "Get Status",
+        "operationId": "get_status_video_status__video_id__get",
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoStatusReply"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ResponseReply": {
+        "properties": {
+          "response": {
+            "type": "string",
+            "title": "Response"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "function_ran": {
+            "type": "string",
+            "title": "Function Ran"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action"
+          },
+          "hidden": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hidden"
+          },
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response",
+          "model",
+          "function_ran",
+          "timestamp",
+          "action",
+          "hidden",
+          "success"
+        ],
+        "title": "ResponseReply"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VideoCreateRequestAPI": {
+        "properties": {
+          "messages": {
+            "items": {
+              
+            },
+            "type": "array",
+            "title": "Messages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "messages"
+        ],
+        "title": "VideoCreateRequestAPI"
+      },
+      "VideoCreateRequestAPIReply": {
+        "properties": {
+          "response": {
+            "type": "string",
+            "title": "Response"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "creation_success": {
+            "type": "boolean",
+            "title": "Creation Success"
+          },
+          "api_version": {
+            "type": "string",
+            "title": "Api Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response",
+          "timestamp",
+          "creation_success",
+          "api_version"
+        ],
+        "title": "VideoCreateRequestAPIReply"
+      },
+      "VideoStatusReply": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "total_sections": {
+            "type": "integer",
+            "title": "Total Sections"
+          },
+          "completed_sections": {
+            "type": "integer",
+            "title": "Completed Sections"
+          },
+          "video_id": {
+            "type": "string",
+            "title": "Video Id"
+          },
+          "response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResponseReply"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "total_sections",
+          "completed_sections",
+          "video_id",
+          "response"
+        ],
+        "title": "VideoStatusReply"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBasic": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  }
+}

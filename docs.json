@@ -28,6 +28,10 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Video API",
+        "openapi": "/openapi.json"
       }
     ],
     "global": {
