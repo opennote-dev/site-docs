@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Your Guide to Opennote",
+        "tab": "Opennote Guide",
         "groups": [
           {
             "group": "Essentials",
@@ -30,8 +30,20 @@
         ]
       },
       {
-        "tab": "Video API",
-        "openapi": "/openapi.json"
+        "tab": "Video API Guide",
+        "groups": [
+          {
+            "group": "API Information",
+            "pages": [
+              "apidoc/introduction",
+              "apidoc/pricing"
+            ]
+          },
+          {
+            "group": "Routes",
+            "openapi": "/openapi.json"
+          }
+        ]
       }
     ],
     "global": {

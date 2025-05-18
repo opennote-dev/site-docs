@@ -1,0 +1,32 @@
+---
+title: "Introduction"
+description: "Introduction to the Opennote Video API."
+icon: "book"
+---
+
+At Opennote, one of our core features is the ability to create interactive content. Students learn in a variety of ways, and we focus our platform to make it easy to create content that is engaging and interactive.
+
+One of the ways we do this is through the use of video. On the Opennote platform, you can tag `@Video` in the chat to create a video. However, many users also want to create videos programmatically, and that's where the Opennote Video API comes in.
+
+## Getting Started
+
+To get started, you will need to [create an account on Opennote](https://opennote.com/signup). Once there, you can navigate to your [Profile](https://opennote.com/profile) page and click the "API Keys" tab. 
+
+Within the API Keys page, you can manage your API keys, billing, and view logs from API calls. These are the API keys that you use in your `Bearer` tokens, as seen in the [API Reference](/api-reference).
+
+You will have to load credits before you make your first API request. You can do this by clicking the "**Load Credits**" button in the API Keys page.
+
+## Rate Limits 
+
+The Opennote Video API has three tiers of rate limits, outlined below: 
+
+| Tier | Requests Per Minute | Requests Per Day |
+|------|-------------------|-----------------|
+| `Developer` | **3** | **50** |
+| `Scale` | **10** | **150** |
+| `Enterprise` | **Custom** | **Custom** |
+
+If you hit a rate limit, you will recieve a `429` status code. You can view the rate limit status of your API Organization in your API Keys page. **Please note that rate limits are per API Organization, not per API key, so the rate limit applies to all API keys in the organization.**
+
+**We only increase your usage tier on request**. If you believe that your current tier does not fit your needs, please contact us at [devtools@opennote.me](mailto:devtools@opennote.me) with the subject line "Video API Tier Increase" or via our [Discord](https://opennote.com/discord), and we'll get back to you as soon as possible.
+
