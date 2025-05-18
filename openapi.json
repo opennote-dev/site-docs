@@ -5,9 +5,10 @@
     "version": "1.1.2"
   },
   "paths": {
-    "/video/make": {
+        "/video/make": {
       "post": {
         "summary": "Make Video",
+        "description": "This endpoint is used to create a video using the Opennote Video API. \n\nThis endpoint requires a Bearer token in the Authorization header, such as: \n```json \n{\n    // ...your other headers...\n    \"Authorization\": \"Bearer <your_api_key>\"\n    // ...your other headers...\n}\n```\nYou can create an API key in your organization settings in the Opennote API dashboard. \n\nThe messages that you input are according to the OpenAI specification, similar to the following: \n```json \n[\n    {\n        \"role\": \"user\",\n        \"content\": \"Hello, how are you?\"\n    }\n]\n```\nThe `role` parameter can be either `user` or `assistant`, and the `content` parameter is the message that you want to send. The `content` parameter *must* be a string. \n\nOnce you request it, it will return something of the format: \n\n```json\n{\n    \"response\": \"<video_id>\",\n    \"timestamp\": \"<timestamp\",\n    \"creation_success\": <true/false>,\n    \"api_version\": \"<current_api_version>\"\n}\n```\n\nThe `video_id` is the \"key\" to your video, and how you should retreive it later using the status endpoint. \nOnce the `creation_success` parameter is `true`, your video will process asynchronously, and is being \ncreated. For more details on how to retrieve the video, see the status endpoint.",
         "operationId": "make_video_video_make_post",
         "parameters": [
           {
@@ -21,14 +22,14 @@
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/VideoCreateRequestAPI"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -57,6 +58,7 @@
     "/video/status/{video_id}": {
       "get": {
         "summary": "Get Status",
+        "description": "This endpoint is used to retrieve the status of a video that you have created. \nThis is given based on the `video_id` key that you recieved in the response of the `make_video` endpoint. \n\nAs `video_id`s are entirely unique, this is your way to retrieve the status of a video that you have created. \n\nThe status of a video can be one of the following: \n\n1. If the video has been completed, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"success\",\n    \"total_sections\": <number_of_sections>,\n    \"completed_sections\": <number_of_completed_sections>,\n    \"video_id\": \"<video_id>\",\n    \"response\": <response_from_the_video_creation_process>,\n}\n```\n- In this scenario, the `response` parameter will no longer be `None` and provide the following information: \n```json\n{\n    \"success\": <true/false>,\n    \"response\": {\n        \"video_url\": \"<video_url>\",\n        \"transcript\": \"<full_transcript_of_video>\",\n        \"sources\": [sources array]\n    },\n    \"model\": \"<model_used>\",\n    \"usage\": {\n        \"total_tokens_used\": <total_tokens_used>,\n        \"total_input_tokens\": <total_input_tokens>,\n        \"total_output_tokens\": <total_output_tokens>,\n        \"search_credits_used\": <search_credits_used>,\n        \"cost\": <cost>\n    },\n    \"timestamp\": \"<timestamp>\"\n}\n```\n\n2. If the video is still being created, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"pending\",\n    \"total_sections\": num_sections,\n    \"completed_sections\": num_completed,\n    \"video_id\": video_id,\n    \"response\": None\n}\n```\n\n3. If the video is not found or there was a significant error, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"not_found\",\n    \"total_sections\": -1,\n    \"completed_sections\": 0,\n    \"video_id\": video_id,\n    \"response\": None\n}\n```",
         "operationId": "get_status_video_status__video_id__get",
         "parameters": [
           {
