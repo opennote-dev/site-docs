@@ -9,6 +9,17 @@
       "post": {
         "summary": "Make Video",
         "operationId": "make_video_video_make_post",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
