@@ -2,19 +2,23 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Opennote Video API",
-    "version": "1.1.2"
+    "version": "1.2.0"
   },
   "servers": [
     {
       "url": "https://api-video.opennote.me",
-      "description": "Video Server"
+      "description": "Production"
+    },
+    {
+      "url": "http://127.0.0.1:8081",
+      "description": "Development"
     }
   ],
   "paths": {
-        "/video/make": {
+    "/video/make": {
       "post": {
         "summary": "Make Video",
-        "description": "This endpoint is used to create a video using the Opennote Video API. \n\nThis endpoint requires a Bearer token in the Authorization header, such as: \n```json \n{\n    // ...your other headers...\n    \"Authorization\": \"Bearer <your_api_key>\"\n    // ...your other headers...\n}\n```\nYou can create an API key in your organization settings in the Opennote API dashboard. \n\nThe messages that you input are according to the OpenAI specification, similar to the following: \n```json \n[\n    {\n        \"role\": \"user\",\n        \"content\": \"Hello, how are you?\"\n    }\n]\n```\nThe `role` parameter can be either `user` or `assistant`, and the `content` parameter is the message that you want to send. The `content` parameter *must* be a string. \n\nOnce you request it, it will return something of the format: \n\n```json\n{\n    \"response\": \"<video_id>\",\n    \"timestamp\": \"<timestamp\",\n    \"creation_success\": <true/false>,\n    \"api_version\": \"<current_api_version>\"\n}\n```\n\nThe `video_id` is the \"key\" to your video, and how you should retreive it later using the status endpoint. \nOnce the `creation_success` parameter is `true`, your video will process asynchronously, and is being \ncreated. For more details on how to retrieve the video, see the status endpoint.",
+        "description": "This endpoint is used to create a video using the Opennote Video API. \n\nThis endpoint requires a Bearer token in the Authorization header, such as: \n```json \n{\n    // ...your other headers...\n    \"Authorization\": \"Bearer <your_api_key>\"\n    // ...your other headers...\n}\n```\nYou can create an API key in your organization settings in the Opennote API dashboard. \n- There must be a singular space between \"Bearer\" and the `<api_key>`, such as `Bearer sk_opennote...`. \n\n\nOpennote's Video System divides generation into a number of sections, then merges them together to form a final video. If not specifies, the default maximum is 5, though there may be certain videos with 4 sections, depending on script complexity. However, to provide developers with more control over the API, the `sections` parameter specifies the maximum number of sections you want to create. This parameter must be between `1` and `5`, and will error if it is not. It can only be greater than `5` if you have a specific section limit on your account. \n\nYou can either use this endpoint with a `script` or `messages` parameter. \n1. If you use the `script` parameter, you must input an array of strings, each representing a section of the video. This array has to be of maximum length 5, unless you have a specific section limit on your account beyond this. Otherwise, all sections beyond the first 5 sections will be ignored. For example: \n```json\n{\n    \"script\": [\n        \"This is the first section of the video\",\n        \"This is the second section of the video\",\n        \"This is the third section of the video\",\n    ], \n    \"sections\": 5 // or any number between 1 and 5 -- defaults to 5 if not provided\n}\n```\n\n2. If you use the `messages` parameter, you must input an array of objects, each representing a message in the conversation. The `sections` parameter is the number of sections you want to create. This feature will automatically generate a script for you, and the transcript will be returned in the response, as seen in the status endpoint. \n\nThe messages that you input are according to the OpenAI specification, similar to the following: \n```json \n{ \n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": \"Hello, how are you?\"\n        }\n    ], \n    \"sections\": 5 // or any number between 1 and 5 -- defaults to 5 if not provided\n}\n```\n- The `role` parameter can be either `user` or `assistant`, and the `content` parameter is the message that you want to send. The `content` parameter *must* be a string. \n\nOnce your request is successful, it will return something of the format: \n```json\n{\n    \"video_id\": \"<video_id>\",\n    \"timestamp\": \"<timestamp\",\n    \"creation_success\": <true/false>,\n    \"api_version\": \"<current_api_version>\"\n}\n```\n\nThe `video_id` is the UUID \"key\" to your video, and how you should retreive it later using the status endpoint. \nOnce the `creation_success` parameter is `true`, your video will be in the generation process, and you can \npoll to retrieve it from the [Status](https://docs.opennote.com/api-reference/get-status) endpoint.",
         "operationId": "make_video_video_make_post",
         "parameters": [
           {
@@ -64,7 +68,7 @@
     "/video/status/{video_id}": {
       "get": {
         "summary": "Get Status",
-        "description": "This endpoint is used to retrieve the status of a video that you have created. \nThis is given based on the `video_id` key that you recieved in the response of the `make_video` endpoint. \n\nAs `video_id`s are entirely unique, this is your way to retrieve the status of a video that you have created. \n\nThe status of a video can be one of the following: \n\n1. If the video has been completed, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"success\",\n    \"total_sections\": <number_of_sections>,\n    \"completed_sections\": <number_of_completed_sections>,\n    \"video_id\": \"<video_id>\",\n    \"response\": <response_from_the_video_creation_process>,\n}\n```\n- In this scenario, the `response` parameter will no longer be `None` and provide the following information: \n```json\n{\n    \"success\": <true/false>,\n    \"response\": {\n        \"video_url\": \"<video_url>\",\n        \"transcript\": \"<full_transcript_of_video>\",\n        \"sources\": [sources array]\n    },\n    \"model\": \"<model_used>\",\n    \"usage\": {\n        \"total_tokens_used\": <total_tokens_used>,\n        \"total_input_tokens\": <total_input_tokens>,\n        \"total_output_tokens\": <total_output_tokens>,\n        \"search_credits_used\": <search_credits_used>,\n        \"cost\": <cost>\n    },\n    \"timestamp\": \"<timestamp>\"\n}\n```\n\n2. If the video is still being created, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"pending\",\n    \"total_sections\": num_sections,\n    \"completed_sections\": num_completed,\n    \"video_id\": video_id,\n    \"response\": None\n}\n```\n\n3. If the video is not found or there was a significant error, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"not_found\",\n    \"total_sections\": -1,\n    \"completed_sections\": 0,\n    \"video_id\": video_id,\n    \"response\": None\n}\n```",
+        "description": "This endpoint is used to retrieve the status of a video that you have created. \nThis is given based on the `video_id` key that you recieved in the response of the `make_video` endpoint. \n\nAs `video_id`s are entirely unique, this is your way to retrieve the status of a video that you have created. \n\nThe status of a video can be one of the following: \n\n1. If the video has been completed, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"success\",\n    \"total_sections\": <number_of_sections>,\n    \"completed_sections\": <number_of_completed_sections>,\n    \"video_id\": \"<video_id>\",\n    \"response\": <response_from_the_video_creation_process>,\n}\n```\n- In this scenario, the `response` parameter will no longer be `None` and provide the following information: \n```json\n{\n    \"success\": <true/false>,\n    \"data\": {\n        \"video_url\": \"<video_url>\",\n        \"transcript\": \"<full_transcript_of_video>\",\n        \"sources\": [sources array]\n    },\n    \"model\": \"<model_used>\",\n    \"usage\": {\n        \"total_tokens_used\": <total_tokens_used>,\n        \"total_input_tokens\": <total_input_tokens>,\n        \"total_output_tokens\": <total_output_tokens>,\n        \"search_credits_used\": <search_credits_used>,\n        \"cost\": <cost>\n    },\n    \"timestamp\": \"<timestamp>\"\n}\n```\n\n2. If the video is still being created, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"pending\",\n    \"total_sections\": <num_sections>,\n    \"completed_sections\": <num_completed>,\n    \"video_id\": <video_id>,\n    \"response\": None\n}\n```\n\n3. If the video is not found or there was a significant error, you will recieve a response of the following format: \n```json \n{\n    \"status\": \"not_found\",\n    \"total_sections\": -1,\n    \"completed_sections\": 0,\n    \"video_id\": <video_id>,\n    \"response\": None\n}\n```",
         "operationId": "get_status_video_status__video_id__get",
         "parameters": [
           {
@@ -83,7 +87,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VideoStatusReply"
+                  "$ref": "#/components/schemas/VideoStatusAPIReply"
                 }
               }
             }
@@ -117,62 +121,56 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
-      "ResponseReply": {
+      "Message": {
         "properties": {
-          "response": {
+          "role": {
             "type": "string",
-            "title": "Response"
+            "title": "Role"
           },
-          "model": {
+          "content": {
             "type": "string",
-            "title": "Model"
-          },
-          "function_ran": {
-            "type": "string",
-            "title": "Function Ran"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp"
-          },
-          "action": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Action"
-          },
-          "hidden": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Hidden"
-          },
-          "success": {
-            "type": "boolean",
-            "title": "Success"
+            "title": "Content"
           }
         },
         "type": "object",
         "required": [
-          "response",
-          "model",
-          "function_ran",
-          "timestamp",
-          "action",
-          "hidden",
-          "success"
+          "role",
+          "content"
         ],
-        "title": "ResponseReply"
+        "title": "Message"
+      },
+      "TrackerUsage": {
+        "properties": {
+          "total_tokens_used": {
+            "type": "integer",
+            "title": "Total Tokens Used"
+          },
+          "total_input_tokens": {
+            "type": "integer",
+            "title": "Total Input Tokens"
+          },
+          "total_output_tokens": {
+            "type": "integer",
+            "title": "Total Output Tokens"
+          },
+          "search_credits_used": {
+            "type": "integer",
+            "title": "Search Credits Used"
+          },
+          "cost": {
+            "type": "number",
+            "title": "Cost"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_tokens_used",
+          "total_input_tokens",
+          "total_output_tokens",
+          "search_credits_used",
+          "cost"
+        ],
+        "title": "TrackerUsage"
       },
       "ValidationError": {
         "properties": {
@@ -207,27 +205,126 @@
         ],
         "title": "ValidationError"
       },
-      "VideoCreateRequestAPI": {
+      "VideoAPIResponse": {
         "properties": {
-          "messages": {
-            "items": {
-              
-            },
-            "type": "array",
-            "title": "Messages"
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/VideoAPIResponseData"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/TrackerUsage"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
           }
         },
         "type": "object",
         "required": [
-          "messages"
+          "success",
+          "data",
+          "model",
+          "usage",
+          "timestamp"
         ],
+        "title": "VideoAPIResponse"
+      },
+      "VideoAPIResponseData": {
+        "properties": {
+          "video_url": {
+            "type": "string",
+            "title": "Video Url"
+          },
+          "transcript": {
+            "type": "string",
+            "title": "Transcript"
+          },
+          "sources": {
+            "items": {
+              
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "video_url",
+          "transcript",
+          "sources"
+        ],
+        "title": "VideoAPIResponseData"
+      },
+      "VideoCreateRequestAPI": {
+        "properties": {
+          "messages": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Message"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Messages"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model",
+            "default": "feynman2"
+          },
+          "sections": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sections",
+            "default": 5
+          },
+          "script": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Script"
+          }
+        },
+        "type": "object",
         "title": "VideoCreateRequestAPI"
       },
       "VideoCreateRequestAPIReply": {
         "properties": {
-          "response": {
+          "video_id": {
             "type": "string",
-            "title": "Response"
+            "title": "Video Id"
           },
           "timestamp": {
             "type": "string",
@@ -244,14 +341,14 @@
         },
         "type": "object",
         "required": [
-          "response",
+          "video_id",
           "timestamp",
           "creation_success",
           "api_version"
         ],
         "title": "VideoCreateRequestAPIReply"
       },
-      "VideoStatusReply": {
+      "VideoStatusAPIReply": {
         "properties": {
           "status": {
             "type": "string",
@@ -272,7 +369,7 @@
           "response": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ResponseReply"
+                "$ref": "#/components/schemas/VideoAPIResponse"
               },
               {
                 "type": "null"
@@ -288,7 +385,7 @@
           "video_id",
           "response"
         ],
-        "title": "VideoStatusReply"
+        "title": "VideoStatusAPIReply"
       }
     },
     "securitySchemes": {

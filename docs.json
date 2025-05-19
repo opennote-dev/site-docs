@@ -36,7 +36,8 @@
             "group": "API Information",
             "pages": [
               "video-api/introduction",
-              "video-api/pricing"
+              "video-api/pricing",
+              "video-api/sdk"
             ]
           },
           {

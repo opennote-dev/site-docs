@@ -1,0 +1,65 @@
+---
+title: "Developer SDKs"
+description: "Python and TypeScript SDKs for the Opennote Video API."
+icon: "code"
+---
+
+We mantain two very lightweight SDKs for both TypeScript and Python for the Opennote Video API. 
+- You can install either one with `pip` or `npm/bun/pnpm/yarn`. 
+
+Here are examples of both routes in both the SDKs, with the options and installation instructions.
+
+## Python
+
+- The PyPi package can be found [here](https://pypi.org/project/opennote/).
+- To install, run `pip install opennote`.
+
+```python
+from opennote import OpennoteVideoClient
+
+client = OpennoteVideoClient(api_key=os.getenv("OPENNOTE_API_KEY"))
+
+response = client.video.make(
+    sections=5
+    model="feynman2" # Not required, but added for future use
+    # If using `messages` instead of `script`
+    messages=[
+        {
+            "role": "user",
+            "content": "Hello, world!"
+        }
+    ]
+    # If using `script` instead of `messages`
+    script=["Hello, world!", "This is a test video."]
+)
+
+
+status = client.video.status(video_id=response.video_id)
+
+print(response, status) # These will deliver the same objects as the endpoints, with type safety. 
+```
+
+
+## TypeScript
+
+- The NPM package can be found [here](https://www.npmjs.com/package/@opennote/video-client).
+- To install, run `npm/bun/pnpm/yarn install @opennote/video-client`.
+
+```typescript
+import { OpennoteVideoClient } from "@opennote/video-client";
+
+const client = new OpennoteVideoClient({ apiKey: process.env.OPENNOTE_API_KEY });
+
+const response = await client.video.make({
+    sections: 5,
+    model: "feynman2",
+    // If using `messages` instead of `script`
+    messages: [{ role: "user", content: "Hello, world!" }],
+    // If using `script` instead of `messages`
+    script: ["Hello, world!", "This is a test video."]
+});
+
+const status = await client.video.status(videoId: response.videoId);
+
+console.log(response, status); // These will deliver the same objects as the endpoints, with type safety. 
+```
