@@ -8,10 +8,6 @@
     {
       "url": "https://api-video.opennote.me",
       "description": "Production"
-    },
-    {
-      "url": "http://127.0.0.1:8081",
-      "description": "Development"
     }
   ],
   "paths": {
