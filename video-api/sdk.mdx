@@ -23,7 +23,7 @@ client = OpennoteVideoClient(api_key=os.getenv("OPENNOTE_API_KEY"))
 
 response = client.video.make(
     sections=5
-    model="feynman2" # Not required, but added for future use
+    model="feynman2" # <-- Not required, but added for future use
     # If using `messages` instead of `script`
     messages=[
         {
@@ -45,10 +45,10 @@ print(response, status) # These will deliver the same objects as the endpoints, 
 ## TypeScript
 
 - The NPM package details can be found [here](https://www.npmjs.com/package/@opennote-ed/video-client), along with the [GitHub Repository](https://github.com/opennote-dev/api-sdk-typescript).
-- To install, run `npm/bun/pnpm/yarn install @opennote/video-client`.
+- To install, run `npm/bun/pnpm/yarn install @opennote-ed/video-client`.
 
 ```typescript
-import { OpennoteVideoClient } from "@opennote/video-client";
+import { OpennoteVideoClient } from "@opennote-ed/video-client";
 
 const client = new OpennoteVideoClient({ apiKey: process.env.OPENNOTE_API_KEY });
 
