@@ -135,6 +135,24 @@
         ],
         "title": "Message"
       },
+      "Source": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "content"
+        ],
+        "title": "Source"
+      },
       "TrackerUsage": {
         "properties": {
           "total_tokens_used": {
@@ -244,7 +262,7 @@
           },
           "sources": {
             "items": {
-              
+              "$ref": "#/components/schemas/Source"
             },
             "type": "array",
             "title": "Sources"
