@@ -5,7 +5,7 @@ icon: "book"
 ---
 
 <Note>
-  The Opennote Video API is not currently available. We are rolling out beta access to users on a per-request basis. If you are interested, email [**devtools@opennote.me**](mailto:devtools@opennote.me) with the subject line <u>"Video API Access Request"</u> and we'll get back to you as soon as possible. 
+  The Opennote Video API is not currently available. We are rolling out beta access to users on a per-request basis. If you are interested, email [**devtools@opennote.me**](mailto:devtools@opennote.me) with the subject line <u>"Video API Access Request"</u> and we'll get back to you as soon as possible.
 </Note>
 
 At Opennote, one of our core features is the ability to create interactive content. Students learn in a variety of ways, and we focus our platform to make it easy to create content that is engaging and interactive.
@@ -33,3 +33,80 @@ The Opennote Video API has three tiers of rate limits, outlined below:
 If you hit a rate limit, you will recieve a `429` status code. You can view the rate limit status of your API Organization in your API Keys page. **Please note that rate limits are per API Organization, not per API key, so the rate limit applies to all API keys in the organization.**
 
 **We only increase your usage tier on request**. If you believe that your current usage exceeds your current tier, please contact us at [devtools@opennote.me](mailto:devtools@opennote.me) with the subject line "Video API Tier Increase", and we'll get back to you as soon as possible.
+
+## Video Metadata 
+
+We serialize certain data into the URL of a video so you can keep the data together wherever you are displaying the video. Take the below URL for example: 
+
+> https://videofs-opennote-us-east-1.s3.us-east-1.amazonaws.com/2025-05-22T08%3A01%3A37.813968-d56e1774-d254-47f6-a006-54efa8199f53--Video%2520Test%2520Example%2520Explained.mp4
+
+This URL is divided into 5 parts: 
+
+1. **The AWS Bucket URL (You can ignore this one): **"https://videofs-opennote-us-east-1.s3.us-east-1.amazonaws.com"
+2. **The Date/Time that the Video was Created: **"2025-05-22T08%3A01%3A37.813968"
+3. **A Unique Identifier (You can also ignore this one): **"d56e1774-d254-47f6-a006-54efa8199f53"
+4. **The Title of the Video: **"Video%2520Test%2520Example%2520Explained"
+5. **The File Type:** ".mp4" (Always MP4) 
+
+Below shows two examples of how you can parse this data out in Python and TypeScript.
+
+#### Python
+
+```python [expandable]
+import urllib.parse
+import re
+
+# Example video URL with metadata embedded in the filename
+url = "https://videofs-opennote-us-east-1.s3.us-east-1.amazonaws.com/2025-05-22T08%3A01%3A37.813968-d56e1774-d254-47f6-a006-54efa8199f53--Video%2520Test%2520Example%2520Explained.mp4"
+
+# 1. Strip the AWS bucket prefix (can be ignored in most cases)
+base_url = "https://videofs-opennote-us-east-1.s3.us-east-1.amazonaws.com/"
+path = url[len(base_url):]
+
+# 2. Decode any URL-encoded characters twice (handles %2520 → %20 → space)
+decoded_path = urllib.parse.unquote(urllib.parse.unquote(path))
+
+# 3. Use regex to extract the metadata parts
+match = re.match(
+    r"(?P<datetime>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+)-"
+    r"(?P<uuid>[a-f0-9\-]+)--"
+    r"(?P<title>.+)\.mp4",
+    decoded_path
+)
+
+print("AWS Bucket URL    :", base_url)
+print("Date/Time Created :", match.group("datetime"))
+print("Unique Identifier :", match.group("uuid"))
+print("Video Title       :", match.group("title"))
+print("File Type         : .mp4")
+```
+
+#### TypeScript
+
+```typescript
+// Example video URL with metadata embedded in the filename
+const url = "https://videofs-opennote-us-east-1.s3.us-east-1.amazonaws.com/2025-05-22T08%3A01%3A37.813968-d56e1774-d254-47f6-a006-54efa8199f53--Video%2520Test%2520Example%2520Explained.mp4";
+
+// 1. Strip the AWS bucket prefix
+const baseUrl = "https://videofs-opennote-us-east-1.s3.us-east-1.amazonaws.com/";
+const path = url.slice(baseUrl.length);
+
+// 2. Decode any URL-encoded characters twice (handles %2520 → %20 → space)
+const decodedPath = decodeURIComponent(decodeURIComponent(path));
+
+// 3. Use regex to extract the metadata parts
+const regex = /(?<datetime>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+)-(?<uuid>[a-f0-9\-]+)--(?<title>.+)\.mp4/;
+const match = decodedPath.match(regex);
+
+if (match && match.groups) {
+    console.log("AWS Bucket URL    :", baseUrl);
+    console.log("Date/Time Created :", match.groups["datetime"]);
+    console.log("Unique Identifier :", match.groups["uuid"]);
+    console.log("Video Title       :", match.groups["title"]);
+    console.log("File Type         : .mp4");
+} else {
+    console.error("Could not parse video metadata from the URL.");
+}
+```
+
+If you have any questions about the API, or need to contact a developer, you can do so via emailing [devtools@opennote.me](mailto:devtools@opennote.me) or joining our [Discord](https://opennote.com/discord)\!
