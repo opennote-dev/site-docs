@@ -28,23 +28,6 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "Video API Guide",
-        "groups": [
-          {
-            "group": "API Information",
-            "pages": [
-              "video-api/introduction",
-              "video-api/pricing",
-              "video-api/sdk"
-            ]
-          },
-          {
-            "group": "Routes",
-            "openapi": "/openapi.json"
-          }
-        ]
       }
     ],
     "global": {
